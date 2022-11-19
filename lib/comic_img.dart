@@ -91,29 +91,33 @@ class _CommicImageState extends State<CommicImage> {
   }
 
   renderAssets() async {
-    switch (widget.imageType) {
-      case CommicImageUrlType.network:
-        imageProvider = NetworkImage(
-          imageUrl,
-          headers: {
-            "user-agent":
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
-            "referer": "https://18comic.org",
-          },
-        );
-        setState(() {});
-        break;
-      default:
-        imageProvider = AssetImage(imageUrl);
-        setState(() {});
+    if (mounted) {
+      switch (widget.imageType) {
+        case CommicImageUrlType.network:
+          imageProvider = NetworkImage(
+            imageUrl,
+            headers: {
+              "user-agent":
+                  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+              "referer": "https://18comic.org",
+            },
+          );
+          setState(() {});
+          break;
+        default:
+          imageProvider = AssetImage(imageUrl);
+          setState(() {});
+      }
     }
     if (needRegenerated) {
       var responeData =
           await loadImageByProvider(imageProvider as ImageProvider);
-      w = responeData.width;
-      h = responeData.height;
-      data = responeData;
-      setState(() {});
+      if (mounted) {
+        w = responeData.width;
+        h = responeData.height;
+        data = responeData;
+        setState(() {});
+      }
     }
   }
 
